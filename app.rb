@@ -1,21 +1,19 @@
+require("sinatra")
+require("sinatra/reloader")
+also_reload("lib/**/*.rb")
+require("./lib/task")
+require("pry")
 
-require('sinatra')
-require('sinatra/reloader')
-require('./lib/parcels')
-also_reload('lib/**/*.rb')
 
 get('/') do
+  @tasks = Task.all()
   erb(:index)
 end
 
-get('/parcels') do
-  height = params.fetch('height').to_i()
-  width = params.fetch('width').to_i()
-  length = params.fetch('length').to_i()
-  weight = params.fetch('weight').to_i()
-  speed = params.fetch('speed').to_i()
-  distance = params.fetch('distance').to_i()
+post('/tasks') do
+  description = params.fetch('description')
 
-  @parcel = Parcel.new(height, width, length, weight).cost_to_ship(distance, speed)
-  erb(:parcels)
+  @task = Task.new(description)
+  @task.save()
+  erb(:task)
 end
